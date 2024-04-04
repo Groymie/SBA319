@@ -23,7 +23,7 @@ mongoose
     console.log("There was a problem connecting to SBA319");
   });
 
-// Routes
+// Get Routes - retrieve data
 app.get("/", (req, res) => {
   res.send("Welcome to the homepage for SBA319!");
 });
@@ -65,6 +65,7 @@ app.get("/api/newusers/:id", async (req, res) => {
   }
 });
 
+// Post routes - add data
 app.post("/api/newusers", async (req, res) => {
   try {
     const newUser = await newUsers.create(req.body);
@@ -91,6 +92,22 @@ app.post("/api/musicians", async (req, res) => {
     res.status(200).json(musician);
   } catch (error) {
     console.log(error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Put Routes - update data
+app.put("/api/musicians/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const musician = await musicians.findByIdAndUpdate(id, req.body);
+    if (!musician) {
+      return res
+        .status(404)
+        .json({ message: `Musician with ID: ${id} not located in database` });
+    }
+    res.status(200).json(musician);
+  } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
