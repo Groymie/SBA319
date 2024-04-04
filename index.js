@@ -3,6 +3,7 @@ const app = express();
 const port = 3000;
 const mongoose = require("mongoose");
 const newUsers = require("./models/newUsers");
+const bands = require("./models/bands");
 
 app.use(express.json());
 
@@ -35,11 +36,20 @@ app.get("/api/newusers", async (req, res) => {
   }
 });
 
+app.get("/api/bands", async (req, res) => {
+  try {
+    const bandsData = await bands.find({});
+    res.status(200).json(bandsData);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 app.get("/api/newusers/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const newUsersData = await newUsers.findById(id);
-    res.status(200).json(newUsersData);
+    const newUserData = await newUsers.findById(id);
+    res.status(200).json(newUserData);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -47,8 +57,18 @@ app.get("/api/newusers/:id", async (req, res) => {
 
 app.post("/api/newusers", async (req, res) => {
   try {
-    const product = await newUsers.create(req.body);
-    res.status(200).json(product);
+    const newUser = await newUsers.create(req.body);
+    res.status(200).json(newUser);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/api/bands", async (req, res) => {
+  try {
+    const band = await bands.create(req.body);
+    res.status(200).json(band);
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ message: error.message });
