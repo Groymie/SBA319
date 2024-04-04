@@ -111,3 +111,19 @@ app.put("/api/musicians/:id", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+// delete route - remove a musician document from the database
+app.delete("/api/musicians/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const musician = await musicians.findByIdAndDelete(id);
+    if (!musician) {
+      return res.status(404).json({
+        message: `Musician with ID: ${id} does not exist in the database`,
+      });
+    }
+    res.status(200).json(musician);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
